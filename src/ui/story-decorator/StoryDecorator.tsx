@@ -1,7 +1,7 @@
-import { Decorator } from '@storybook/react';
+import type { ComponentType, ReactElement } from 'react';
 import styles from './StoryDecorator.module.scss';
 
-export const StoryDecorator: Decorator = (Story) => (
+export const StoryDecorator = (Story: ComponentType): ReactElement => (
 	<div className={styles.storybookContainer}>
 		<Story />
 	</div>

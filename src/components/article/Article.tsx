@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { CSSProperties } from 'react';
 
 // Сообщаем вебпаку, что этот файл использует это изображение.
 import plane from 'src/images/plane.png';
@@ -9,11 +10,31 @@ import styles from './Article.module.scss';
 export const Article = () => {
 	return (
 		<article className={clsx(styles.article)}>
-			<Text as='h1' size={45} weight={800} uppercase dynamicLite>
+			<Text
+				as='h1'
+				size={45}
+				weight={800}
+				uppercase
+				dynamicLite
+				style={
+					{
+						'--dynamic-lite-scale': 2.5,
+					} as CSSProperties
+				}>
 				Портрет Западной Швейцарии
 			</Text>
 			<div className={styles.titleDescription}>
-				<Text size={22} weight={800} uppercase align='center' dynamicLite>
+				<Text
+					size={22}
+					weight={800}
+					uppercase
+					align='center'
+					dynamicLite
+					style={
+						{
+							'--dynamic-lite-scale': 22 / 18,
+						} as CSSProperties
+					}>
 					Примитивист Фиштр расписывает новый бюджетный авиалайнер
 				</Text>
 			</div>
