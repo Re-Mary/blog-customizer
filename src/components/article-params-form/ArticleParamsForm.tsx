@@ -6,7 +6,7 @@ import { RadioGroup } from 'src/ui/radio-group';
 
 import clsx from 'clsx';
 import styles from './ArticleParamsForm.module.scss';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
 	ArticleStateType,
 	defaultArticleState,
@@ -15,6 +15,7 @@ import {
 	fontColors,
 	backgroundColors,
 	contentWidthArr,
+	OptionType,
 } from 'src/constants/articleProps';
 
 /** Состояние и колбэки сайдбара с формой — один объект для пропсов */
@@ -53,14 +54,36 @@ export const ArticleParamsForm = ({
 		return () => window.removeEventListener('mousedown', handleMouseDown);
 	}, [sidebar.isOpen]);
 
+	const updateFormField = useCallback((field: keyof ArticleStateType) => {
+		return (value: OptionType) => {
+			setFormState((prev) => ({
+				...prev,
+				[field]: value,
+			}));
+		};
+	}, []);
+
+	const fieldUpdaters = useMemo(
+		() => ({
+			fontFamilyOption: updateFormField('fontFamilyOption'),
+			fontSizeOption: updateFormField('fontSizeOption'),
+			fontColor: updateFormField('fontColor'),
+			backgroundColor: updateFormField('backgroundColor'),
+			contentWidth: updateFormField('contentWidth'),
+		}),
+		[updateFormField]
+	);
+
 	const handleSubmit = (e: React.SyntheticEvent) => {
 		e.preventDefault();
 		setPageState(formState);
+		sidebar.onClose();
 	};
 
 	const handleReset = () => {
 		setFormState(defaultArticleState);
 		setPageState(defaultArticleState);
+		sidebar.onClose();
 	};
 
 	return (
@@ -79,12 +102,7 @@ export const ArticleParamsForm = ({
 						title='Шрифт'
 						selected={formState.fontFamilyOption}
 						options={fontFamilyOptions}
-						onChange={(selected) => {
-							setFormState((prev) => ({
-								...prev,
-								fontFamilyOption: selected,
-							}));
-						}}
+						onChange={fieldUpdaters.fontFamilyOption}
 					/>
 
 					<RadioGroup
@@ -92,48 +110,28 @@ export const ArticleParamsForm = ({
 						name='font-size'
 						selected={formState.fontSizeOption}
 						options={fontSizeOptions}
-						onChange={(selected) => {
-							setFormState((prev) => ({
-								...prev,
-								fontSizeOption: selected,
-							}));
-						}}
+						onChange={fieldUpdaters.fontSizeOption}
 					/>
 
 					<Select
 						title='Цвет шрифта'
 						selected={formState.fontColor}
 						options={fontColors}
-						onChange={(selected) => {
-							setFormState((prev) => ({
-								...prev,
-								fontColor: selected,
-							}));
-						}}
+						onChange={fieldUpdaters.fontColor}
 					/>
 
 					<Select
 						title='Цвет фона'
 						selected={formState.backgroundColor}
 						options={backgroundColors}
-						onChange={(selected) => {
-							setFormState((prev) => ({
-								...prev,
-								backgroundColor: selected,
-							}));
-						}}
+						onChange={fieldUpdaters.backgroundColor}
 					/>
 
 					<Select
 						title='Ширина контента'
 						selected={formState.contentWidth}
 						options={contentWidthArr}
-						onChange={(selected) => {
-							setFormState((prev) => ({
-								...prev,
-								contentWidth: selected,
-							}));
-						}}
+						onChange={fieldUpdaters.contentWidth}
 					/>
 
 					<div className={styles.bottomContainer}>
